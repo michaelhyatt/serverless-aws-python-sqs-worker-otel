@@ -27,14 +27,33 @@ This template defines two functions, `producer` and `consumer`. First of them, `
 
 This example requires `git`, `serverless` framework and `npm` to be installed.
 
-First, clone the repo:
+Clone the repo, install npm dependencies
 ```
 git clone 
+npm install
+npm install --save-dev serverless-plugin-lambda-insights
+```
 
+Copy `env.json.template` into `env.json` and update the right region and APM server credentials:
+```json
+{
+    "aws-region": "ap-southeast-1",
+    "apm-server-url": "YOURCLUSTER.apm.australia-southeast1.gcp.elastic-cloud.com:443",
+    "apm-server-token": "YOURTOKEN"
+}
 
+```
+
+Deploy the lambdas
 ```
 serverless deploy
 ```
+
+To remove lambdas
+```
+serverless remove
+```
+
 
 After running deploy, you should see output similar to:
 
