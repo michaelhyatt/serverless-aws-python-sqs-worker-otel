@@ -19,5 +19,5 @@ var/
 # Serverless directories
 .serverless
 node_modules
-
+package-lock.json
 env.json
