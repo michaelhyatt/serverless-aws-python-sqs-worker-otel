@@ -29,7 +29,8 @@ This example requires `git`, `serverless` framework and `npm` to be installed.
 
 Clone the repo, install npm dependencies
 ```
-git clone 
+git clone https://github.com/michaelhyatt/serverless-aws-python-sqs-worker-otel
+cd serverless-aws-python-sqs-worker-otel
 npm install
 npm install --save-dev serverless-plugin-lambda-insights
 ```
