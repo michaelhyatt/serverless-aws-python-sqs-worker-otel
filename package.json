@@ -1,0 +1,11 @@
+{
+  "name": "aws-python-sqs-worker-project",
+  "version": "1.0.0",
+  "description": "Serverless Framework Python SQS Producer-Consumer on AWS",
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-plugin-lambda-insights": "^1.0.8",
+    "serverless-python-requirements": "^5.1.1"
+  }
+}

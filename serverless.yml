@@ -1,0 +1,79 @@
+service: aws-python-sqs-worker-project
+
+frameworkVersion: '2'
+
+package:
+  patterns:
+    - '!**'
+    - 'handler.py'
+    - 'collector.yaml'
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: '20201221'
+  stage: dev
+  region: ${file(env.json):aws-region}
+  environment:
+    AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+    OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
+    APM_SERVER_URL: ${file(env.json):apm-server-url}
+    APM_SERVER_TOKEN: ${file(env.json):apm-server-token}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt: [ WorkerQueue, Arn ]
+
+functions:
+  producer:
+    handler: handler.producer
+    tracing: Active
+    lambdaInsights: true
+    layers:
+      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1
+    events:
+      - http:
+          method: post
+          path: produce
+    environment:
+      QUEUE_URL:
+        Ref: WorkerQueue
+
+  consumer:
+    handler: handler.consumer
+    tracing: Active
+    lambdaInsights: true
+    layers:
+      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1    
+    events:
+      - sqs:
+          batchSize: 1
+          arn:
+            Fn::GetAtt:
+              - WorkerQueue
+              - Arn
+
+resources:
+  Resources:
+    WorkerQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: workerQueue-${self:provider.stage}
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - WorkerDLQ
+              - Arn
+          maxReceiveCount: 5
+    WorkerDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: workerDlq-${self:provider.stage}
+
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-lambda-insights
