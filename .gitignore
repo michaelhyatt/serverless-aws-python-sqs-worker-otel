@@ -21,3 +21,5 @@ var/
 node_modules
 package-lock.json
 env.json
+
+.vscode
