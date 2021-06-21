@@ -38,7 +38,9 @@ def producer(event, context):
 
 def consumer(event, context):
     for record in event['Records']:
+        logger.info(f'Message: {record}')
         logger.info(f'Message body: {record["body"]}')
         logger.info(
             f'Message attribute: {record["messageAttributes"]["AttributeName"]["stringValue"]}'
         )
+       

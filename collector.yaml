@@ -6,6 +6,7 @@ receivers:
       grpc:
       
 exporters:
+  awsxray:
   logging:
     loglevel: debug
   otlp:
@@ -20,7 +21,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, otlp]
+      exporters: [logging, otlp, awsxray]
     metrics:
       receivers: [otlp]
       exporters: [logging, otlp]
