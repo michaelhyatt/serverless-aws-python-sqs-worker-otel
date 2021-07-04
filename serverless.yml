@@ -7,6 +7,8 @@ package:
     - '!**'
     - 'handler.py'
     - 'collector.yaml'
+    - 'requirements.txt'
+    - 'otel-instrument.py'
 
 provider:
   name: aws
@@ -14,11 +16,8 @@ provider:
   lambdaHashingVersion: '20201221'
   stage: dev
   region: ${file(env.json):aws-region}
-  tracing:
-    lambda: Active
-    apiGateway: true
   environment:
-    AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+    AWS_LAMBDA_EXEC_WRAPPER: /var/task/otel-instrument.py
     OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
     APM_SERVER_URL: ${file(env.json):apm-server-url}
     APM_SERVER_TOKEN: ${file(env.json):apm-server-token}
@@ -34,8 +33,6 @@ provider:
 functions:
   producer:
     handler: handler.producer
-    tracing: Active
-    lambdaInsights: true
     layers:
       - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1
     events:
@@ -48,10 +45,8 @@ functions:
 
   consumer:
     handler: handler.consumer
-    tracing: Active
-    lambdaInsights: true
     layers:
-      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1    
+      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1
     events:
       - sqs:
           batchSize: 1
@@ -79,4 +74,3 @@ resources:
 
 plugins:
   - serverless-python-requirements
-  - serverless-plugin-lambda-insights

@@ -4,9 +4,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+      http:
       
 exporters:
-  awsxray:
   logging:
     loglevel: debug
   otlp:
@@ -21,7 +21,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, otlp, awsxray]
+      exporters: [logging, otlp]
     metrics:
       receivers: [otlp]
       exporters: [logging, otlp]

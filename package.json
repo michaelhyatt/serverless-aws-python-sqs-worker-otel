@@ -5,8 +5,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "serverless-plugin-lambda-insights": "^1.0.8",
-    "serverless-plugin-tracing": "^2.0.0",
     "serverless-python-requirements": "^5.1.1"
   }
 }
